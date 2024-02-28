@@ -4,7 +4,7 @@
   "description": "Projeto construído a partir do curso.dev de um clone do TabNews",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev"
   },
   "author": "Caio Rodrigues",
   "license": "MIT",
