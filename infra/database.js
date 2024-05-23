@@ -9,16 +9,13 @@ async function query(queryObject) {
     password: process.env.POSTGRES_PASSWORD,
   });
 
-  console.log(
-    "Credentials database:" +
-      {
-        user: process.env.POSTGRES_USER,
-        database: process.env.POSTGRES_DB,
-        port: process.env.POSTGRES_PORT,
-        host: process.env.POSTGRES_HOST,
-        password: process.env.POSTGRES_PASSWORD,
-      },
-  );
+  console.log("Credentials database:", {
+    user: process.env.POSTGRES_USER,
+    database: process.env.POSTGRES_DB,
+    port: process.env.POSTGRES_PORT,
+    host: process.env.POSTGRES_HOST,
+    password: process.env.POSTGRES_PASSWORD,
+  });
 
   try {
     await client.connect();
