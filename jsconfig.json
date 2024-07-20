@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": "."
-  }
+    "baseUrl": ".",
+    "module": "ESNext",
+    "target": "ES6"
+  },
+  "exclude": ["node_modules"]
 }
