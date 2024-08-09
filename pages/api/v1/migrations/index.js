@@ -3,42 +3,43 @@ import { join } from "node:path";
 import database from "infra/database";
 
 export default async function migrations(request, response) {
-  if (request.method !== "GET" || request.method !== "POST") {
-    return response.status(403).json({ message: "Method not authorize" });
-  }
-
-  const dbClient = await database.getNewClientDB();
-
-  const migrationDefaultOptions = {
-    dbClient: dbClient,
-    dir: join("infra", "migrations"),
-    direction: "up",
-    dryRun: true,
-    verbose: true,
-    migrationsTable: "pgmigrations",
-  };
-
-  if (request.method === "GET") {
-    const migrationsPending = await migrationRunner(migrationDefaultOptions);
-    dbClient.end();
-
-    return response.status(200).json(migrationsPending);
-  }
-
-  if (request.method === "POST") {
-    const migratedMigrations = await migrationRunner({
-      ...migrationDefaultOptions,
-      dryRun: false,
-    });
-
-    dbClient.end();
-
-    if (migratedMigrations.length > 0) {
-      return response.status(201).json(migratedMigrations);
+  try {
+    if (request.method !== "GET" || request.method !== "POST") {
+      return response.status(405).end();
     }
 
-    return response.status(200).json(migratedMigrations);
-  }
+    const dbClient = await database.getNewClientDB();
 
-  return response.status(405).end();
+    const migrationDefaultOptions = {
+      dbClient: dbClient,
+      dir: join("infra", "migrations"),
+      direction: "up",
+      dryRun: true,
+      verbose: true,
+      migrationsTable: "pgmigrations",
+    };
+
+    if (request.method === "GET") {
+      const migrationsPending = await migrationRunner(migrationDefaultOptions);
+
+      return response.status(200).json(migrationsPending);
+    }
+
+    if (request.method === "POST") {
+      const migratedMigrations = await migrationRunner({
+        ...migrationDefaultOptions,
+        dryRun: false,
+      });
+
+      if (migratedMigrations.length > 0) {
+        return response.status(201).json(migratedMigrations);
+      }
+
+      return response.status(200).json(migratedMigrations);
+    }
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  } finally {
+    dbClient.end();
+  }
 }
