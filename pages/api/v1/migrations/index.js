@@ -3,6 +3,10 @@ import { join } from "node:path";
 import database from "infra/database";
 
 export default async function migrations(request, response) {
+  if (request.method !== "GET" || request.method !== "POST") {
+    return response.status(403).json({ message: "Method not authorize" });
+  }
+
   const dbClient = await database.getNewClientDB();
 
   const migrationDefaultOptions = {
