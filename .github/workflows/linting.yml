@@ -1,4 +1,4 @@
-name: Automated Tests
+name: Linting
 
 on: pull_request
 
